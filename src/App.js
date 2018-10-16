@@ -1,34 +1,38 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
-import Quotes from './Quotes';
-import Lamp from './Lamp';
+import GenerateQuote from './GenerateQuote';
+import Quote from './Quote';
 
 class App extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			working: props.working
+			quote: null
 		}
 	}
 
-	handleClick = () => {
-		this.setState({ working: !this.state.working })
+	getQuote() {
+		fetch("https://thesimpsonsquoteapi.glitch.me/quotes")
+		.then(response => response.json())
+		.then(data => {
+			this.setState({
+				quote: data[0]
+			})
+			
+		})
 	}
 
 	render() {
-		const work = this.state.working ? "work" : "break";
+		console.log(this.state.quote)
 		return (
 			<div className="App">		
-				<img src={logo} className={work} alt="logo" />
-				<Lamp />
-				<button className={work} onClick={this.handleClick}>
-					{work}
-				</button>
 				<h1 className="App-title">Simpsons Quotes</h1>
-				<Quotes />
-			</div>
+				<GenerateQuote selectQuote={() => this.getQuote()} />
+				{this.state.quote &&
+					<Quote quote={this.state.quote} />
+				}
+				</div>
 		);
 	}
 }
